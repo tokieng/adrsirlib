@@ -1,0 +1,87 @@
+#!/usr/bin/python3
+#coding: utf-8
+
+import adrsirlib as ir
+import os
+import sys
+
+dir = "./irdata/"
+
+def read_to_file(no, filename):
+	str = ir.get(no)
+	with open(dir+filename, 'wt') as fout:
+		fout.write(str)
+
+def send_from_file(filename):
+	path = dir+filename
+	if not os.path.isfile(path):
+		print("Not exist.")
+		return
+
+	print(path)
+	with open(path, 'rt') as fin:
+		str = fin.read()
+	ir.send(str)
+
+def display_list():
+	print("保存されているIRデータ一覧:")
+
+	files = os.listdir(dir)
+
+	if len(files) == 0:
+		print ("ありません")
+	else:
+		for file in files:
+			print ("   * {}".format(file))
+
+
+#####
+
+def usage():
+	print("\n使い方: {0} <store|send|list> [options...]\n".format(__file__))
+	print("  コマンド")
+	print("    store: ADRSIRからIRデータを読み取って、ファイルに保存する")
+	print("           <ボタン番号>:<ファイル名> [<ボタン番号>:<ファイル名>...]")
+	print("              ※ボタン番号 = 0～19")
+	print("        ex) {0} store 0:power 1:volume_up 2:volume_down".format(__file__))
+	print("    send : ファイルに保存しているデータを、ADRSIRに送ってIR送信する")
+	print("        ex) {0} send volume_up".format(__file__))
+	print("    list : ファイルに保存しているデータの一覧を表示する")
+	print("        ex) {0} list".format(__file__))
+
+def store(list):
+	for one in list:
+		ones = one.split(':')
+		if len(ones) != 2:
+			print("Skip: {}".format(one))
+			continue
+		no = ones[0]
+		file = ones[1]
+		if (not no.isdigit()) or int(no)<0 or 19<int(no) :
+			print("Skip: {}".format(no))
+			continue
+		no = int(no)
+		read_to_file(no,file)
+
+def send(list):
+	if len(list) != 1:
+		print("Illegal options.")
+
+	file = list[0]
+	send_from_file(file)
+
+if __name__ == '__main__':
+
+	if len(sys.argv) == 1:
+		usage()
+		exit()
+
+	command = sys.argv[1]
+	if command == 'store':
+		store(sys.argv[2:])
+	elif command == 'send':
+		send(sys.argv[2:])
+	elif command == 'list':
+		display_list()
+	else:
+		usage()
