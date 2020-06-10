@@ -5,15 +5,16 @@ import adrsirlib as ir
 import os
 import sys
 
-dir = "./irdata/"
+DATA_DIR = os.path.join(os.path.dirname(__file__), "./irdata/")
 
 def read_to_file(no, filename):
 	str = ir.get(no)
-	with open(dir+filename, 'wt') as fout:
+	path = os.path.join(DATA_DIR, filename)
+	with open(path, 'wt') as fout:
 		fout.write(str)
 
 def send_from_file(filename):
-	path = dir+filename
+	path = os.path.join(DATA_DIR, filename)
 	if not os.path.isfile(path):
 		print("Not exist.")
 		return
@@ -26,7 +27,7 @@ def send_from_file(filename):
 def display_list():
 	print("保存されているIRデータ一覧:")
 
-	files = os.listdir(dir)
+	files = os.listdir(DATA_DIR)
 
 	if len(files) == 0:
 		print ("ありません")
