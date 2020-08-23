@@ -5,7 +5,7 @@ import adrsirlib as ir
 import os
 import sys
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), "./irdata/")
+DATA_DIR = os.path.join(os.path.dirname(__file__), "irdata")
 
 def read_to_file(no, filename):
 	str = ir.get(no)
